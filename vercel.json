@@ -12,6 +12,9 @@
   "routes": [
     {
       "src": "/(manifest.json|favicon.ico|logo192.png|logo512.png)",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
       "dest": "/$1"
     },
     {
