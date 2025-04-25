@@ -113,7 +113,7 @@ export const DicomPage: React.FC = () => {
                       <div>
                         <div className="font-medium">{file.filename}</div>
                         <div className="text-sm text-gray-500">
-                          {new Date(file.uploadDate).toLocaleDateString()}
+                          {new Date(file.createdAt).toLocaleDateString()}
                         </div>
                       </div>
                       <button
