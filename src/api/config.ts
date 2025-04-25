@@ -11,6 +11,11 @@ const api = axios.create({
 // Add request interceptor for handling errors
 api.interceptors.request.use(
   (config) => {
+    // Skip auth for static files and manifest
+    if (config.url?.includes('/static/') || config.url === '/manifest.json') {
+      return config;
+    }
+    
     // Add auth token if it exists
     const token = localStorage.getItem('token');
     if (token) {
@@ -31,9 +36,11 @@ api.interceptors.response.use(
       // Handle specific error status codes
       switch (error.response.status) {
         case 401:
-          // Handle unauthorized access
-          localStorage.removeItem('token');
-          window.location.href = '/login';
+          // Only redirect to login if not already on login page
+          if (!window.location.pathname.includes('/login')) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+          }
           break;
         case 403:
           // Handle forbidden access
