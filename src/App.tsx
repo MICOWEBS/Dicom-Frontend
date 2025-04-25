@@ -1,26 +1,52 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { DicomPage } from './pages/DicomPage';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { PrivateRoute } from './components/PrivateRoute';
+import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
+import { UploadZone } from './components/UploadZone';
+import { DicomViewer } from './components/DicomViewer';
+import { AIResultPanel } from './components/AIResultPanel';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <DicomPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/view/:fileId"
+            element={
+              <PrivateRoute>
+                <DicomPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/inference/:fileId"
+            element={
+              <PrivateRoute>
+                <DicomPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
-}
+};
 
 export default App;
