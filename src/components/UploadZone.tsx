@@ -13,7 +13,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUploadComplete }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const { status, loading, checkUploadLimit } = useSubscription();
+  const { checkUploadLimit } = useSubscription();
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -60,18 +60,6 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUploadComplete }) => {
     setFile(null);
     setUploadProgress(0);
     setError(null);
-  };
-
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const response = await dicomService.uploadFile(file);
-      onUploadComplete(response.fileId);
-    } catch (error) {
-      console.error('Upload failed:', error);
-    }
   };
 
   return (

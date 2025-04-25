@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Image as LucideImage, Info, AlertCircle } from 'lucide-react';
 import { dicomService } from '../api/dicomService';
 import { InferenceButton } from './InferenceButton';
-import { DicomMetadata, InferenceResult, DicomViewerState } from '../types/dicom';
-import { DicomFile } from '../types/dicom';
+import { InferenceResult, DicomViewerState } from '../types/dicom';
 
 interface DicomViewerProps {
   fileId: string;
@@ -17,7 +16,6 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({ fileId }) => {
     error: null,
     loading: true,
   });
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const loadDicomData = async () => {
@@ -62,17 +60,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({ fileId }) => {
         URL.revokeObjectURL(state.previewUrl);
       }
     };
-  }, [fileId]);
-
-  useEffect(() => {
-    if (state.previewUrl) {
-      const img = new window.Image();
-      img.src = state.previewUrl;
-      img.onload = () => {
-        setImage(img);
-      };
-    }
-  }, [state.previewUrl]);
+  }, [fileId, state.previewUrl]);
 
   const handleInferenceComplete = (results: InferenceResult) => {
     setState(prev => ({ ...prev, inferenceResults: results }));
