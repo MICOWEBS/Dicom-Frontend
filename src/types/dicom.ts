@@ -1,36 +1,30 @@
 export interface DicomFile {
   id: string;
   filename: string;
-  uploadDate: string;
-  size: number;
-  status: string;
+  cloudinaryPublicId: string;
+  cloudinarySecureUrl: string;
+  metadata: {
+    patientId?: string;
+    studyDate?: string;
+    modality?: string;
+    [key: string]: any;
+  };
+  aiResults: {
+    predictions?: any[];
+    annotations?: any[];
+    [key: string]: any;
+  };
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface DicomMetadata {
-  patientName: string;
-  patientId: string;
-  studyDate: string;
-  studyTime: string;
-  modality: string;
-  studyDescription: string;
-  seriesDescription: string;
-  institutionName: string;
-  manufacturer: string;
-  modelName: string;
-  sliceThickness: number;
-  pixelSpacing: [number, number];
-  rows: number;
-  columns: number;
-  bitsAllocated: number;
-  bitsStored: number;
-  highBit: number;
-  pixelRepresentation: number;
-  samplesPerPixel: number;
-  photometricInterpretation: string;
-  windowCenter: number;
-  windowWidth: number;
-  rescaleIntercept: number;
-  rescaleSlope: number;
+  patientName?: string;
+  patientId?: string;
+  studyDate?: string;
+  modality?: string;
+  [key: string]: any;
 }
 
 export interface InferenceResult {
@@ -51,8 +45,10 @@ export interface UploadResponse {
 }
 
 export interface InferenceStatus {
-  status: 'processing' | 'completed' | 'failed';
-  result?: InferenceResult;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  startedAt?: string;
+  completedAt?: string;
+  results?: any[];
   error?: string;
 }
 
