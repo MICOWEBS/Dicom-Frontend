@@ -61,21 +61,6 @@ export const DicomPage: React.FC = () => {
     }
   };
 
-  const handleFileSelect = (fileId: string) => {
-    setSelectedFileId(fileId);
-    navigate(`/view/${fileId}`);
-  };
-
-  const handleRunInference = async (fileId: string) => {
-    try {
-      await dicomService.runInference(fileId);
-      navigate(`/inference/${fileId}`);
-    } catch (err) {
-      console.error('Error running inference:', err);
-      setError('Failed to run inference. Please try again.');
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">DICOM Viewer</h1>

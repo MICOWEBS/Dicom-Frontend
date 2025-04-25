@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Info, AlertCircle } from 'lucide-react';
+import { Image as LucideImage, Info, AlertCircle } from 'lucide-react';
 import { dicomService } from '../api/dicomService';
 import { InferenceButton } from './InferenceButton';
 import { DicomMetadata, InferenceResult, DicomViewerState } from '../types/dicom';
+import { DicomFile } from '../types/dicom';
 
 interface DicomViewerProps {
   fileId: string;
@@ -16,6 +17,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({ fileId }) => {
     error: null,
     loading: true,
   });
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const loadDicomData = async () => {
@@ -62,6 +64,16 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({ fileId }) => {
     };
   }, [fileId]);
 
+  useEffect(() => {
+    if (state.previewUrl) {
+      const img = new window.Image();
+      img.src = state.previewUrl;
+      img.onload = () => {
+        setImage(img);
+      };
+    }
+  }, [state.previewUrl]);
+
   const handleInferenceComplete = (results: InferenceResult) => {
     setState(prev => ({ ...prev, inferenceResults: results }));
   };
@@ -90,7 +102,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({ fileId }) => {
       {/* Preview Section */}
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex items-center mb-4">
-          <Image className="w-5 h-5 mr-2 text-gray-500" />
+          <LucideImage className="w-5 h-5 mr-2 text-gray-500" />
           <h2 className="text-lg font-semibold">DICOM Preview</h2>
         </div>
         {state.previewUrl && (

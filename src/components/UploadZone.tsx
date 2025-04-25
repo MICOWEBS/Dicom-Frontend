@@ -62,6 +62,18 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onUploadComplete }) => {
     setError(null);
   };
 
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const response = await dicomService.uploadFile(file);
+      onUploadComplete(response.fileId);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div
