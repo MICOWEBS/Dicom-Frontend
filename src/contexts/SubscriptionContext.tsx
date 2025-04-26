@@ -40,13 +40,8 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const checkUploadLimit = async (): Promise<boolean> => {
-    try {
-      const response = await api.get('/subscription/limits');
-      return response.data.canUpload;
-    } catch (err) {
-      console.error('Failed to check upload limit:', err);
-      return false;
-    }
+    // Always allow uploads regardless of subscription plan
+    return true;
   };
 
   useEffect(() => {
