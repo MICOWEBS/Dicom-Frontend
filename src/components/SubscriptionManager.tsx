@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api/config';
+import api from '../api/axios';
 import './SubscriptionManager.css';
 
 interface Subscription {

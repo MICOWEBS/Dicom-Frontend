@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import api from '../api/config';
+import api from '../api/axios';
 import { UploadZone } from '../components/UploadZone';
 import { SubscriptionInfo } from '../components/SubscriptionInfo';
 

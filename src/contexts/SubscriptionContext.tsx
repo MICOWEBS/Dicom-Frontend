@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import api from '../api/config';
+import api from '../api/axios';
 
 interface SubscriptionStatus {
   tier: 'free' | 'pro' | 'enterprise';

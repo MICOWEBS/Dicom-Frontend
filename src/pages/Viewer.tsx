@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import api from '../api/config';
+import api from '../api/axios';
 import { DicomViewer } from '../components/DicomViewer';
 import { AIResultPanel } from '../components/AIResultPanel';
 
