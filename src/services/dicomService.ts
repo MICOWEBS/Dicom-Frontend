@@ -1,4 +1,4 @@
-import { AxiosProgressEvent } from 'axios';
+import axios, { AxiosProgressEvent } from 'axios';
 import api from '../api/axios';
 
 interface DicomFile {
