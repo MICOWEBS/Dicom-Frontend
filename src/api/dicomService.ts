@@ -54,7 +54,7 @@ export const dicomService = {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await api.post('/api/dicom/upload', formData, {
+      const response = await api.post('/dicom/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
