@@ -1,4 +1,5 @@
 import api from './axios';
+import { AxiosProgressEvent } from 'axios';
 
 export interface UploadResponse {
   fileId: string;
@@ -57,7 +58,7 @@ export const dicomService = {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        onUploadProgress: (progressEvent: ProgressEvent) => {
+        onUploadProgress: (progressEvent: AxiosProgressEvent) => {
           if (onProgress && progressEvent.total) {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             onProgress(progress);
