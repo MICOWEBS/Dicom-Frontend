@@ -1,4 +1,4 @@
-import axios from './axiosConfig';
+import api from './axios';
 
 export interface UploadResponse {
   fileId: string;
@@ -49,14 +49,15 @@ export const dicomService = {
   // Upload a DICOM file
   uploadFile: async (file: File, onProgress?: (progress: number) => void): Promise<UploadResponse> => {
     try {
+      console.log('Starting file upload...');
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await axios.post('/dicom/upload', formData, {
+      const response = await api.post('/api/dicom/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        onUploadProgress: (progressEvent) => {
+        onUploadProgress: (progressEvent: ProgressEvent) => {
           if (onProgress && progressEvent.total) {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             onProgress(progress);
@@ -64,8 +65,10 @@ export const dicomService = {
         },
       });
 
+      console.log('File upload successful:', response.data);
       return response.data;
     } catch (error: any) {
+      console.error('File upload failed:', error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to upload file',
         error.response?.status,
@@ -77,9 +80,12 @@ export const dicomService = {
   // Get list of uploaded DICOM files
   getFiles: async (): Promise<DicomFile[]> => {
     try {
-      const response = await axios.get('/dicom/files');
+      console.log('Fetching files...');
+      const response = await api.get('/api/dicom/files');
+      console.log('Files fetched successfully');
       return response.data;
     } catch (error: any) {
+      console.error('Failed to fetch files:', error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to fetch files',
         error.response?.status,
@@ -91,9 +97,12 @@ export const dicomService = {
   // Get a specific DICOM file
   getFile: async (fileId: string): Promise<DicomFile> => {
     try {
-      const response = await axios.get(`/dicom/files/${fileId}`);
+      console.log(`Fetching file ${fileId}...`);
+      const response = await api.get(`/api/dicom/files/${fileId}`);
+      console.log('File fetched successfully');
       return response.data;
     } catch (error: any) {
+      console.error(`Failed to fetch file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to fetch file',
         error.response?.status,
@@ -105,8 +114,11 @@ export const dicomService = {
   // Delete a DICOM file
   deleteFile: async (fileId: string): Promise<void> => {
     try {
-      await axios.delete(`/dicom/files/${fileId}`);
+      console.log(`Deleting file ${fileId}...`);
+      await api.delete(`/api/dicom/files/${fileId}`);
+      console.log('File deleted successfully');
     } catch (error: any) {
+      console.error(`Failed to delete file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to delete file',
         error.response?.status,
@@ -118,9 +130,12 @@ export const dicomService = {
   // Start inference on a DICOM file
   startInference: async (fileId: string): Promise<{ fileId: string }> => {
     try {
-      const response = await axios.post(`/dicom/inference/${fileId}`);
+      console.log(`Starting inference for file ${fileId}...`);
+      const response = await api.post(`/api/dicom/inference/${fileId}`);
+      console.log('Inference started successfully');
       return response.data;
     } catch (error: any) {
+      console.error(`Failed to start inference for file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to start inference',
         error.response?.status,
@@ -132,9 +147,12 @@ export const dicomService = {
   // Get inference status
   getInferenceStatus: async (fileId: string): Promise<InferenceStatus> => {
     try {
-      const response = await axios.get(`/dicom/inference/status/${fileId}`);
+      console.log(`Getting inference status for file ${fileId}...`);
+      const response = await api.get(`/api/dicom/inference/status/${fileId}`);
+      console.log('Inference status fetched successfully');
       return response.data;
     } catch (error: any) {
+      console.error(`Failed to get inference status for file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to get inference status',
         error.response?.status,
@@ -146,9 +164,12 @@ export const dicomService = {
   // Get inference results
   getInferenceResults: async (fileId: string): Promise<any> => {
     try {
-      const response = await axios.get(`/dicom/files/${fileId}/ai-results`);
+      console.log(`Getting inference results for file ${fileId}...`);
+      const response = await api.get(`/api/dicom/files/${fileId}/ai-results`);
+      console.log('Inference results fetched successfully');
       return response.data;
     } catch (error: any) {
+      console.error(`Failed to get inference results for file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to get inference results',
         error.response?.status,
@@ -160,9 +181,12 @@ export const dicomService = {
   // Get DICOM metadata
   getMetadata: async (fileId: string): Promise<any> => {
     try {
-      const response = await axios.get(`/dicom/files/${fileId}/metadata`);
+      console.log(`Getting metadata for file ${fileId}...`);
+      const response = await api.get(`/api/dicom/files/${fileId}/metadata`);
+      console.log('Metadata fetched successfully');
       return response.data;
     } catch (error: any) {
+      console.error(`Failed to get metadata for file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to get metadata',
         error.response?.status,
@@ -174,10 +198,13 @@ export const dicomService = {
   // Get DICOM image preview
   getPreview: async (fileId: string): Promise<string> => {
     try {
-      const response = await axios.get(`/dicom/files/${fileId}`);
+      console.log(`Getting preview for file ${fileId}...`);
+      const response = await api.get(`/api/dicom/files/${fileId}`);
       const file = response.data;
+      console.log('Preview fetched successfully');
       return file.cloudinarySecureUrl;
     } catch (error: any) {
+      console.error(`Failed to get preview for file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to get preview',
         error.response?.status,
@@ -189,8 +216,11 @@ export const dicomService = {
   // Run inference on a DICOM file
   runInference: async (fileId: string): Promise<void> => {
     try {
-      await axios.post(`/dicom/inference/${fileId}`);
+      console.log(`Running inference for file ${fileId}...`);
+      await api.post(`/api/dicom/inference/${fileId}`);
+      console.log('Inference completed successfully');
     } catch (error: any) {
+      console.error(`Failed to run inference for file ${fileId}:`, error);
       throw new DicomServiceError(
         error.response?.data?.message || 'Failed to run inference',
         error.response?.status,

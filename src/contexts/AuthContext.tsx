@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/config';
+import api from '../api/axios';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -26,12 +26,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          // Verify token with backend
+          console.log('Verifying token...');
           const response = await api.get('/auth/verify');
           setIsAuthenticated(true);
           setUser(response.data.user);
+          console.log('Token verified successfully');
+        } else {
+          console.log('No token found');
+          setIsAuthenticated(false);
+          setUser(null);
         }
       } catch (err) {
+        console.error('Token verification failed:', err);
         localStorage.removeItem('token');
         setIsAuthenticated(false);
         setUser(null);
@@ -47,12 +53,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       setError(null);
+      console.log('Attempting login...');
       const response = await api.post('/auth/login', { email, password });
-      localStorage.setItem('token', response.data.token);
+      
+      const token = response.data.token;
+      if (!token) {
+        throw new Error('No token received from server');
+      }
+      
+      console.log('Login successful, saving token...');
+      localStorage.setItem('token', token);
       setIsAuthenticated(true);
       setUser(response.data.user);
       navigate('/');
     } catch (err: any) {
+      console.error('Login failed:', err);
       setError(err.response?.data?.message || 'Login failed');
       throw err;
     } finally {
@@ -64,12 +79,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       setError(null);
+      console.log('Attempting registration...');
       const response = await api.post('/auth/register', { email, password, name });
-      localStorage.setItem('token', response.data.token);
+      
+      const token = response.data.token;
+      if (!token) {
+        throw new Error('No token received from server');
+      }
+      
+      console.log('Registration successful, saving token...');
+      localStorage.setItem('token', token);
       setIsAuthenticated(true);
       setUser(response.data.user);
       navigate('/');
     } catch (err: any) {
+      console.error('Registration failed:', err);
       setError(err.response?.data?.message || 'Registration failed');
       throw err;
     } finally {
@@ -78,6 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    console.log('Logging out...');
     localStorage.removeItem('token');
     setIsAuthenticated(false);
     setUser(null);
