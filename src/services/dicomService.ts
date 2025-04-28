@@ -22,7 +22,7 @@ export const uploadDicomFile = async (
     console.log('Starting DICOM file upload:', {
       filename: file.name,
       size: file.size,
-      type: file.type
+      type: file.type,
     });
 
     const formData = new FormData();
@@ -32,9 +32,10 @@ export const uploadDicomFile = async (
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
-        if (onProgress && progressEvent.total) {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      onUploadProgress: (progressEvent) => {
+        const { loaded, total } = progressEvent as AxiosProgressEvent;
+        if (onProgress && total) {
+          const progress = Math.round((loaded * 100) / total);
           onProgress(progress);
         }
       },
@@ -42,18 +43,18 @@ export const uploadDicomFile = async (
 
     console.log('DICOM file upload successful:', {
       fileId: response.data.id,
-      filename: response.data.filename
+      filename: response.data.filename,
     });
 
     return response.data;
   } catch (error) {
     console.error('DICOM file upload failed:', {
       filename: file.name,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
     throw new DicomServiceError(
       'Failed to upload DICOM file',
       error instanceof Error ? error.message : 'Unknown error'
     );
   }
-}; 
+};
